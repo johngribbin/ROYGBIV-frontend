@@ -3,7 +3,7 @@
   import { parseNodeAddress } from '../utils.js'
   import Header from '../components/Header.svelte'
   import Steps from '../components/Steps.svelte'
-  import type { Info, Prism } from '../types.js'
+  import type { Info, Invoice, Member, Prism } from '../types.js'
   import { fade } from 'svelte/transition'
   import Qr from '../components/QR.svelte'
   import close from '../icons/close.js'
@@ -25,8 +25,8 @@
     }
   }
 
-  let address = '03093b030028e642fc3b9a05c8eb549f202958e92143da2e85579b92ef0f49cc7d@localhost:7272'
-  let rune = 'SFTxHiGlQrB2H19h7gCPzLuml3-xroW-sloI84CXRek9NQ=='
+  let address = '035e12a449b5d08b97deed279cff0e788a71a51ff9e72f9e6a0a024eed1d073442@localhost:7272'
+  let rune = '5R_2elcqipJhcOPG49NmlxYrAqz_3L44KKoCLfV-XaU9MA=='
   let bolt12 = ''
   let info: Info
 
@@ -83,14 +83,65 @@
   async function createPrism(prism: Prism) {
     try {
       // @TODO create bolt12 using the prism details
-      const result =
-        'lno1qgsqvgnwgcg35z6ee2h3yczraddm72xrfua9uve2rlrm9deu7xyfzrc2q32xjurnzgpyzsskyyppzvu7dwwmpelpf5vme4sj6p46ymme86xsf847n2v689nxdr6ds8c'
-      bolt12 = result
+      const result = (await request('offer', {
+        label: prism.label,
+        amount: 'any',
+        description: 'PRISM'
+      })) as {
+        bolt12: string
+      }
+
+      console.log({ result })
+      bolt12 = result.bolt12
       modalOpen = 'qr'
       // const result = await request('createprism', prism)
       // bolt12 = (result as { bolt12: string }).bolt12
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  let lastPayIndex = 0
+
+  async function handleFinish(e) {
+    const { label, members } = e.detail
+    createPrism({ label, members })
+
+    const { invoices } = (await request('listinvoices', [])) as { invoices: Invoice[] }
+    let lastInvoice = invoices.reverse()[0]
+
+    if (lastInvoice && !lastInvoice.pay_index) {
+      lastInvoice = invoices.reverse()[1]
+    }
+
+    const invoice = (await request('waitanyinvoice', [lastInvoice?.pay_index])) as Invoice
+
+    console.log({ invoice })
+
+    const { bolt12, amount_received_msat } = invoice
+
+    if (bolt12 && bolt12 === bolt12 && amount_received_msat) {
+      const totalAmount = members.reduce(
+        (total: number, member: Member) => (total += member.split),
+        0
+      )
+
+      await Promise.all(
+        members.map(async (member: Member) => {
+          const { name, destination, split } = member
+          console.log({ amount_received_msat })
+          const amountMsat = (amount_received_msat as string).replace('msat', '')
+          const amount = (split / totalAmount) * Number(amountMsat)
+
+          console.log('keysending:', { destination, name, amount })
+
+          const result = await request('keysend', {
+            destination,
+            amount_msat: Math.round(amount).toString()
+          })
+          console.log('keysend result:', result)
+        })
+      )
     }
   }
 </script>
@@ -127,7 +178,7 @@
 
   <!-- Prism Steps -->
   {#if $connectionStatus$ === 'connected'}
-    <Steps finish={(prism) => createPrism(prism)} />
+    <Steps on:finish={handleFinish} />
   {/if}
 </main>
 

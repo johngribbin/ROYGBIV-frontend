@@ -96,4 +96,5 @@
       <div class="w-8">{@html photo}</div>
     </button>
   </div>
+  <span>{value}</span>
 </div>

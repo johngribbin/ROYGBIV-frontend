@@ -1,8 +1,13 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte'
   import Button from './Button.svelte'
   import Slide from './Slide.svelte'
 
-  export let finish = (args: any) => {} // no-operation function
+  const dispatch = createEventDispatcher()
+
+  function finish() {
+    dispatch('finish', { label, members })
+  }
 
   type Slides = typeof slides
   type SlideStep = Slides[number]
