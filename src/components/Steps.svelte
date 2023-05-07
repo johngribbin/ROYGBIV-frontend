@@ -55,14 +55,14 @@
 
   // Member split destination
   function validateSplit(split: number) {
-    if (split < 0.1) {
-      return 'split minimum value is 0.1'
+    if (split < 1) {
+      return 'split minimum value is 1'
     }
-    if (split > 100) {
-      return 'split maximum value is 100'
+    if (split > 1000) {
+      return 'split maximum value is 1000'
     }
-    if (!/^\d+(\.\d{1,2})?$/.test(split.toString())) {
-      return 'split is limited to two decimals'
+    if (!/^\d+$/.test(split.toString())) {
+      return 'split must only be integers'
     }
 
     return ''
