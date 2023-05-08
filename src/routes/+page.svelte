@@ -2,7 +2,7 @@
   import Lnmessage from 'lnmessage'
   import { parseNodeAddress, validateParsedNodeAddress } from '../utils.js'
   import Header from '../components/Header.svelte'
-  import Steps from '../components/Steps.svelte'
+  import PrismSteps from '../components/PrismSteps.svelte'
   import type { Info, Prism } from '../types.js'
   import { fade } from 'svelte/transition'
   import Qr from '../components/QR.svelte'
@@ -10,6 +10,7 @@
   import Button from '../components/Button.svelte'
   import Icon from '../components/Icon/Icon.svelte'
   import Triangle from '../components/Triangle.svelte'
+  import PrismsList from '../components/PrismsList.svelte'
 
   let ln: Lnmessage
   let connectionStatus$: Lnmessage['connectionStatus$']
@@ -25,13 +26,15 @@
   }
 
   // Clams regtest
-  let address =
-    '02dfe211dadedd71904be7b14d7ad354a8a7398640ede29af9f48c32a07181a32b@54.253.48.162:7000'
+  // let address = '02dfe211dadedd71904be7b14d7ad354a8a7398640ede29af9f48c32a07181a32b@54.253.48.162:7000'
+  // Polar
+  let address = '03093b030028e642fc3b9a05c8eb549f202958e92143da2e85579b92ef0f49cc7d@localhost:7272'
   // let address = ''
   let addressError = ''
   // Clams regtest
-  let rune =
-    'PqOlxqVvRBFoA8A4-pnnIxYKIA0Y7UUYEkrD3sPs2y49MjQmbWV0aG9kXmxpc3R8bWV0aG9kXmdldHxtZXRob2Q9c3VtbWFyeXxtZXRob2Q9cGF5fG1ldGhvZD1rZXlzZW5kfG1ldGhvZD1pbnZvaWNlfG1ldGhvZD13YWl0YW55aW52b2ljZXxtZXRob2Q9d2FpdGludm9pY2V8bWV0aG9kPXNpZ25tZXNzYWdlJm1ldGhvZC9saXN0ZGF0YXN0b3JlJnJhdGU9NjA='
+  // let rune = 'PqOlxqVvRBFoA8A4-pnnIxYKIA0Y7UUYEkrD3sPs2y49MjQmbWV0aG9kXmxpc3R8bWV0aG9kXmdldHxtZXRob2Q9c3VtbWFyeXxtZXRob2Q9cGF5fG1ldGhvZD1rZXlzZW5kfG1ldGhvZD1pbnZvaWNlfG1ldGhvZD13YWl0YW55aW52b2ljZXxtZXRob2Q9d2FpdGludm9pY2V8bWV0aG9kPXNpZ25tZXNzYWdlJm1ldGhvZC9saXN0ZGF0YXN0b3JlJnJhdGU9NjA='
+  // Polar
+  let rune = 'SFTxHiGlQrB2H19h7gCPzLuml3-xroW-sloI84CXRek9NQ=='
   // let rune = ''
   let runeError = ''
   let websocketProxy = 'wss://api.clams.tech/ws-proxy'
@@ -42,6 +45,7 @@
 
   let modalOpen: 'connect' | 'qr' | null = null
   let connecting = false
+  let showSteps = false
 
   async function connect() {
     const { publicKey, ip, port } = parseNodeAddress(address)
@@ -52,7 +56,7 @@
       remoteNodePublicKey: publicKey,
       // WebSocket proxy endpoint to connect through if running in prod
       // @TODO uncomment for deployment
-      wsProxy: websocketProxy,
+      // wsProxy: websocketProxy,
       // The IP address of the node
       ip,
       // The port of the node, defaults to 9735
@@ -71,6 +75,7 @@
     await ln.connect()
     connecting = false
     modalOpen = null
+    showSteps = true
 
     const infoResult = await request('getinfo')
     info = infoResult as Info
@@ -177,8 +182,12 @@
     {/if}
 
     <!-- Prism Steps -->
-    {#if $connectionStatus$ === 'connected'}
-      <Steps finish={(prism) => createPrism(prism)} />
+    {#if $connectionStatus$ === 'connected' && showSteps}
+      <PrismSteps finish={(prism) => createPrism(prism)} />
+    {/if}
+
+    {#if $connectionStatus$ === 'connected' && !showSteps}
+      <PrismsList />
     {/if}
   </div>
 </main>
@@ -258,7 +267,10 @@
   >
     <button
       class="w-8 cursor-pointer absolute top-4 right-4 z-[99]"
-      on:click={() => (modalOpen = null)}
+      on:click={() => {
+        modalOpen = null
+        showSteps = false
+      }}
     >
       {@html close}
     </button>

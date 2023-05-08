@@ -268,13 +268,13 @@
     <div class="max-w-sm">
       <h1 class="text-4xl">Summary</h1>
       <p class="mt-4 text-md">
-        {label} has {members.length} members. Please review splits before creating your prism:
+        {label} has {members.length} members with the following splits:
       </p>
       <div class="mt-6">
         {#each members as member, i}
           <div class="flex p-1">
             <p class="mr-2">{i + 1})</p>
-            <p class="mr-2">{member.percentage.toFixed(2)}% -</p>
+            <p class="mr-2">{member.percentage.toFixed(1)}% -</p>
             <p>{member.name}</p>
           </div>
         {/each}
