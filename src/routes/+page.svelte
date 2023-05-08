@@ -24,13 +24,17 @@
     }
   }
 
-  // let address = '03093b030028e642fc3b9a05c8eb549f202958e92143da2e85579b92ef0f49cc7d@localhost:7272'
-  let address = ''
+  // Clams regtest
+  let address =
+    '02dfe211dadedd71904be7b14d7ad354a8a7398640ede29af9f48c32a07181a32b@54.253.48.162:7000'
+  // let address = ''
   let addressError = ''
-  // let rune = 'SFTxHiGlQrB2H19h7gCPzLuml3-xroW-sloI84CXRek9NQ=='
-  let rune = ''
+  // Clams regtest
+  let rune =
+    'PqOlxqVvRBFoA8A4-pnnIxYKIA0Y7UUYEkrD3sPs2y49MjQmbWV0aG9kXmxpc3R8bWV0aG9kXmdldHxtZXRob2Q9c3VtbWFyeXxtZXRob2Q9cGF5fG1ldGhvZD1rZXlzZW5kfG1ldGhvZD1pbnZvaWNlfG1ldGhvZD13YWl0YW55aW52b2ljZXxtZXRob2Q9d2FpdGludm9pY2V8bWV0aG9kPXNpZ25tZXNzYWdlJm1ldGhvZC9saXN0ZGF0YXN0b3JlJnJhdGU9NjA='
+  // let rune = ''
   let runeError = ''
-  let websocketProxy = 'wss://wsproxy.clams.tech'
+  let websocketProxy = 'wss://api.clams.tech/ws-proxy'
   let websocketProxyError = ''
   let connectDisabled = false
   let bolt12 = ''

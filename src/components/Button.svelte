@@ -15,7 +15,9 @@
   {disabled}
   class:fill
 >
-  <span class="bg-black p-2 rounded flex flex-row items-center justify-center align-center gap-2">
+  <span
+    class="bg-black pr-6 pl-6 pt-3 pb-3 028ecb75726c89c857d3c805383c28bfd82b22af21a05da565f5ed1325e45392c7rounded flex flex-row items-center justify-center align-center gap-2"
+  >
     <p class="">
       <slot />
     </p>

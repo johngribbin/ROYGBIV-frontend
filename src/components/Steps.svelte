@@ -153,7 +153,7 @@
         <p class="mt-1 text-sm text-red-500">{labelError}</p>
       {/if}
       <!-- Member Count -->
-      <h1 class="mt-8 text-4xl">Member count</h1>
+      <h1 class="mt-8 text-4xl text-center">Members</h1>
       <div class="flex justify-around mt-4">
         <button
           on:click={() => {
@@ -197,9 +197,9 @@
     <Slide direction={slideDirection}>
       <div class="max-w-sm">
         <h1 class="text-3xl mb-6">Member {i + 1}</h1>
-        <div class="flex flex-col border rounded p-6 w-full overflow">
+        <div class="flex flex-col w-full overflow">
           <!-- Name, Split & Share (%) -->
-          <div class="flex flex-between items-center gap-4">
+          <div class="flex flex-between items-center gap-6">
             <!-- Name -->
             <div class="w-full">
               <label class="mb-1 block" for="name">Name</label>
@@ -268,7 +268,7 @@
     <div class="max-w-sm">
       <h1 class="text-4xl">Summary</h1>
       <p class="mt-4 text-md">
-        {label} has {members.length} members. Please review before creating your prism:
+        {label} has {members.length} members. Please review splits before creating your prism:
       </p>
       <div class="mt-6">
         {#each members as member, i}
