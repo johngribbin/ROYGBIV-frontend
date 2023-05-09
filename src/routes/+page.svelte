@@ -125,7 +125,7 @@
       console.log(
         `
       
-      PRISM RESPONSE =
+      PRISM METHOD RESPONSE =
       
       `,
         result,
@@ -136,7 +136,17 @@
       bolt12 = (result as { bolt12: string }).bolt12
       modalOpen = 'qr'
     } catch (error) {
-      console.log(error)
+      console.log(
+        `
+      
+      PRISM METHOD ERROR = 
+      
+      `,
+        error,
+        `
+      
+      `
+      )
     }
   }
 
