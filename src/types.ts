@@ -2,12 +2,12 @@ export type Info = { alias: string; color: string }
 
 export type Member = {
   name: string
-  nameError: string
+  nameError?: string
   destination: string
-  destinationError: string
+  destinationError?: string
   split: number
-  splitError: string
-  percentage: number
+  splitError?: string
+  percentage?: number
 }
 
 export type Prism = {

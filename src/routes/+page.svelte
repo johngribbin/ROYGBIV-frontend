@@ -19,17 +19,18 @@
     connectionStatus$ = ln.connectionStatus$
   }
 
-  // Clams regtest
-  // let address = '02dfe211dadedd71904be7b14d7ad354a8a7398640ede29af9f48c32a07181a32b@54.253.48.162:7000'
+  // Bob
+  let address =
+    '024cc0d3240b52130248a8fcb4f144babf3ddfb6c9787fb670a308d03737b6ca09@roygbiv.money:9736'
   // Polar
   // let address = '03093b030028e642fc3b9a05c8eb549f202958e92143da2e85579b92ef0f49cc7d@localhost:7272'
-  let address = ''
+  // let address = ''
   let addressError = ''
-  // Clams regtest
-  // let rune = 'PqOlxqVvRBFoA8A4-pnnIxYKIA0Y7UUYEkrD3sPs2y49MjQmbWV0aG9kXmxpc3R8bWV0aG9kXmdldHxtZXRob2Q9c3VtbWFyeXxtZXRob2Q9cGF5fG1ldGhvZD1rZXlzZW5kfG1ldGhvZD1pbnZvaWNlfG1ldGhvZD13YWl0YW55aW52b2ljZXxtZXRob2Q9d2FpdGludm9pY2V8bWV0aG9kPXNpZ25tZXNzYWdlJm1ldGhvZC9saXN0ZGF0YXN0b3JlJnJhdGU9NjA='
+  // Bobs rune
+  let rune = 'Va8U-_ViDUG4O9yGHN4Vsn7b72kXGDBfI5JXPmavy7Q9MA=='
   // Polar
   // let rune = 'SFTxHiGlQrB2H19h7gCPzLuml3-xroW-sloI84CXRek9NQ=='
-  let rune = ''
+  // let rune = ''
   let runeError = ''
   let websocketProxy = 'wss://api.clams.tech/ws-proxy'
   let websocketProxyError = ''
@@ -75,6 +76,18 @@
   }
 
   async function request(method: string, params?: unknown): Promise<unknown> {
+    console.log(
+      `
+    
+    PARAMS PASSED TO PRISM METHOD = 
+    
+    `,
+      params,
+      `
+    
+    `
+    )
+
     try {
       const result = await ln.commando({
         method,
@@ -89,15 +102,28 @@
     }
   }
 
+  // Carol
+  // '02357d77ba5402b88e7ff7010c7f3e174fb3fe455052604d66123d5a1a34f8718e',
+  // Dave
+  // '038ae7aab146154e38e8a37bc0ecf922af4d9650b297052101adefe55e1c052555',
+  // Erin
+  // '02b86ea4956c660c54acdd576050d4db66b9b0bc65ea15208ab0a3f600864267da',
   async function createPrism(prism: Prism) {
+    const { label, members } = prism
+
+    const params = {
+      label,
+      members: members.map((member) => ({
+        name: member.name,
+        destination: member.destination,
+        split: member.split
+      }))
+    }
+
     try {
-      // @TODO create bolt12 using the prism details
-      const result =
-        'lno1qgsqvgnwgcg35z6ee2h3yczraddm72xrfua9uve2rlrm9deu7xyfzrc2q32xjurnzgpyzsskyyppzvu7dwwmpelpf5vme4sj6p46ymme86xsf847n2v689nxdr6ds8c'
-      bolt12 = result
+      const result = await request('prism', params)
+      bolt12 = (result as { bolt12: string }).bolt12
       modalOpen = 'qr'
-      // const result = await request('createprism', prism)
-      // bolt12 = (result as { bolt12: string }).bolt12
     } catch (error) {
       console.log(error)
     }
