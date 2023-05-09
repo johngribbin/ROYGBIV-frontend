@@ -122,6 +122,17 @@
 
     try {
       const result = await request('prism', params)
+      console.log(
+        `
+      
+      PRISM RESPONSE =
+      
+      `,
+        result,
+        `
+      
+      `
+      )
       bolt12 = (result as { bolt12: string }).bolt12
       modalOpen = 'qr'
     } catch (error) {
