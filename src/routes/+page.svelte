@@ -21,13 +21,13 @@
 
   // Bob
   let address =
-    '024cc0d3240b52130248a8fcb4f144babf3ddfb6c9787fb670a308d03737b6ca09@roygbiv.money:9736'
+    '03e67264a492d3844e08177a89990f9a44a7bdd178f127da52da6fca01955f97f8@roygbiv.money:9736'
   // Polar
   // let address = '03093b030028e642fc3b9a05c8eb549f202958e92143da2e85579b92ef0f49cc7d@localhost:7272'
   // let address = ''
   let addressError = ''
   // Bobs rune
-  let rune = 'Va8U-_ViDUG4O9yGHN4Vsn7b72kXGDBfI5JXPmavy7Q9MA=='
+  let rune = 'QIQhfPgL1tuhHJ3bDwBCP-5miSKyWP7qy7o7J_33rlU9MA=='
   // Polar
   // let rune = 'SFTxHiGlQrB2H19h7gCPzLuml3-xroW-sloI84CXRek9NQ=='
   // let rune = ''
@@ -37,6 +37,7 @@
   let connectDisabled = false
   let bolt12 = ''
   let info: Info
+  let prisms: Prism[]
 
   let modalOpen: 'connect' | 'qr' | null = null
   let connecting = false
@@ -55,7 +56,7 @@
       ip,
       // The port of the node, defaults to 9735
       port,
-      // connect directly to a node without TLS
+      // Connect directly to a node without TLS
       wsProtocol: 'ws:',
       logger: {
         info: console.log,
@@ -64,15 +65,16 @@
       }
     })
 
-    // initiate the connection to the remote node
+    // Initiate the connection to the remote node
     connecting = true
     await ln.connect()
     connecting = false
     modalOpen = null
-    showSteps = true
-
+    // Fetch node info & prism list
     const infoResult = await request('getinfo')
     info = infoResult as Info
+    const prismsResult = await request('listprisms')
+    prisms = prismsResult as Prism[]
   }
 
   async function request(method: string, params?: unknown): Promise<unknown> {
@@ -103,11 +105,11 @@
   }
 
   // Carol
-  // '02357d77ba5402b88e7ff7010c7f3e174fb3fe455052604d66123d5a1a34f8718e',
+  // '02a21a720090c57fa8ff0be873eeddf44202849ca08bbdc8897783db289c38010f',
   // Dave
-  // '038ae7aab146154e38e8a37bc0ecf922af4d9650b297052101adefe55e1c052555',
+  // '03e2ae321a9ae6d1e6a650cc31897a5f79251f08701fa5a8e3bf65ec591f6de5fb',
   // Erin
-  // '02b86ea4956c660c54acdd576050d4db66b9b0bc65ea15208ab0a3f600864267da',
+  // '039eb780b114dbee1147ae5513215d3915f322ce0980471185a2c2c764453a8bf7',
   async function createPrism(prism: Prism) {
     const { label, members } = prism
 
@@ -121,7 +123,7 @@
     }
 
     try {
-      const result = await request('prism', params)
+      const result = await request('createprism', params)
       console.log(
         `
       
@@ -221,14 +223,14 @@
       </div>
     {/if}
 
-    <!-- Prism Steps -->
-    {#if $connectionStatus$ === 'connected' && showSteps}
-      <PrismSteps finish={(prism) => createPrism(prism)} />
-    {/if}
-
     <!-- Prism List -->
     {#if $connectionStatus$ === 'connected' && !showSteps}
-      <PrismList />
+      <PrismList {prisms} showSteps={() => (showSteps = true)} />
+    {/if}
+
+    <!-- Prism Steps -->
+    {#if showSteps}
+      <PrismSteps finish={(prism) => createPrism(prism)} />
     {/if}
   </div>
 </main>
@@ -261,7 +263,7 @@
           placeholder="033f4bbfcd67bd0fc858499929a3255d063999ee23f4c5e12b8b1089e132b3e408@localhost:7272"
         />
         <!-- Address validation -->
-        {#if addressError}
+        {#if address && addressError}
           <p class="mt-1 text-sm text-red-500">{addressError}</p>
         {/if}
       </div>
@@ -276,7 +278,7 @@
           placeholder="O2osJxV-6lGUgAf-0NllduniYbq1Zkn-45trtbx4qAE9MA=="
         />
         <!-- Address validation -->
-        {#if !rune.length}
+        {#if rune && runeError}
           <p class="mt-1 text-sm text-red-500">{runeError}</p>
         {/if}
       </div>
@@ -290,6 +292,9 @@
           placeholder="wss://wsproxy.clams.tech"
         />
       </div>
+      {#if !websocketProxy}
+        <p class="mt-1 text-sm text-red-500">WebSocket Proxy is required</p>
+      {/if}
       <!-- Connect Button -->
       <div class="mt-8">
         <Button disabled={connectDisabled} fullWidth={true} on:click={connect}>
