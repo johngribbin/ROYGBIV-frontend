@@ -12,5 +12,6 @@ export type Member = {
 
 export type Prism = {
   label: string
+  bolt12?: string
   members: Member[]
 }
