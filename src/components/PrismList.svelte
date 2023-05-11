@@ -4,18 +4,17 @@
   export let prisms: Prism[]
 
   export let showSteps: () => void
-
-  $: console.log('prisms = ', prisms)
 </script>
 
-@TODO - finish stlying, consider slider component
-<div class="overflow-auto">
-  <h1 class="mb-4 text-3xl">Your prisms</h1>
+<h1 class="mb-4 text-3xl">Your prisms</h1>
+<div class="flex overflow-auto max-w-md">
   {#if prisms?.length}
     {#each prisms as { label, bolt12, members }}
       <div class="border max-w-md">
-        <div class="border p-2 break-words">
-          {label} -
+        <div class="p-2">
+          {label}
+        </div>
+        <div class="p-2 break-words">
           {bolt12}
         </div>
         {#each members as { name, destination, split }}
@@ -28,7 +27,8 @@
       </div>
     {/each}
   {/if}
-  <div class="w-full text-center">
-    <Button on:click={showSteps} format={'primary'}>Create Prism</Button>
-  </div>
+</div>
+
+<div class="mt-8 w-full text-center">
+  <Button on:click={showSteps} format={'primary'}>Create Prism</Button>
 </div>

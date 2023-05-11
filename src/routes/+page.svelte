@@ -11,6 +11,7 @@
   import Icon from '../components/Icon/Icon.svelte'
   import Triangle from '../components/Triangle.svelte'
   import PrismList from '../components/PrismList.svelte'
+  import { modalState$ } from '../streams.js'
 
   let ln: Lnmessage
   let connectionStatus$: Lnmessage['connectionStatus$']
@@ -38,8 +39,6 @@
   let bolt12 = ''
   let info: Info
   let prisms: Prism[]
-
-  let modalOpen: 'connect' | 'qr' | null = null
   let connecting = false
   let showSteps = false
 
@@ -69,7 +68,7 @@
     connecting = true
     await ln.connect()
     connecting = false
-    modalOpen = null
+    modalState$.next(null)
     // Fetch node info & prism list
     const infoResult = await request('getinfo')
     info = infoResult as Info
@@ -136,7 +135,7 @@
       `
       )
       bolt12 = (result as { bolt12: string }).bolt12
-      modalOpen = 'qr'
+      modalState$.next('qr')
     } catch (error) {
       console.log(
         `
@@ -187,6 +186,9 @@
       connectDisabled = false
     }
   }
+
+  // @TODO
+  // After creating a prism, call listprisms to update UI
 </script>
 
 <svelte:head>
@@ -211,9 +213,9 @@
     {/if}
 
     <!-- Button to open connect modal -->
-    {#if $connectionStatus$ !== 'connected' && !modalOpen}
+    {#if $connectionStatus$ !== 'connected' && !$modalState$}
       <div class="flex flex-col items-center justify-center bg-black">
-        <Button on:click={() => (modalOpen = 'connect')} icon="ArrowUpCircle">Connect</Button>
+        <Button on:click={() => modalState$.next('connect')} icon="ArrowUpCircle">Connect</Button>
 
         <p class="max-w-md mt-8 text-center">
           ROYGBIV creates lightning prisms, which are special BOLT12 offers. Any payments received
@@ -236,7 +238,7 @@
 </main>
 
 <!-- Connect Modal -->
-{#if modalOpen === 'connect'}
+{#if $modalState$ === 'connect'}
   <div
     transition:fade
     class="w-full h-full bg-black absolute top-0 bg-black/30 flex flex-col items-center justify-center z-10 p-6"
@@ -244,7 +246,7 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       class="p-4 cursor-pointer absolute top-4 right-4 text-white"
-      on:click={() => (modalOpen = null)}
+      on:click={() => modalState$.next(null)}
     >
       <div class="w-6 h-6">
         <Icon icon="Cross" />
@@ -306,7 +308,7 @@
 {/if}
 
 <!-- QR Modal -->
-{#if modalOpen === 'qr'}
+{#if $modalState$ === 'qr'}
   <div
     transition:fade
     class="flex w-full h-full top-0 absolute backdrop-blur-sm bg-black/30 flex flex-col items-center justify-center z-10"
@@ -314,7 +316,7 @@
     <button
       class="w-8 cursor-pointer absolute top-4 right-4 z-[99]"
       on:click={() => {
-        modalOpen = null
+        modalState$.next(null)
         showSteps = false
       }}
     >
