@@ -21,18 +21,18 @@
 
   // Bob
   let address =
-    '03e67264a492d3844e08177a89990f9a44a7bdd178f127da52da6fca01955f97f8@roygbiv.money:9736'
+    '02e8cc0da4b828fb2d3bcf007f6e6fe249e132502eee623d760006805f73f639e9@roygbiv.money:9736'
   // Polar
   // let address = '03093b030028e642fc3b9a05c8eb549f202958e92143da2e85579b92ef0f49cc7d@localhost:7272'
   // let address = ''
   let addressError = ''
   // Bobs rune
-  let rune = 'QIQhfPgL1tuhHJ3bDwBCP-5miSKyWP7qy7o7J_33rlU9MA=='
+  let rune = 'WQ5LoTjfxqznw7NkVUwVeGq_VHlwQsj7smzLl4m5VQY9MA=='
   // Polar
   // let rune = 'SFTxHiGlQrB2H19h7gCPzLuml3-xroW-sloI84CXRek9NQ=='
   // let rune = ''
   let runeError = ''
-  let websocketProxy = 'wss://api.clams.tech/ws-proxy'
+  let websocketProxy = 'wss://roygbiv.money:9836'
   let websocketProxyError = ''
   let connectDisabled = false
   let bolt12 = ''
@@ -105,11 +105,11 @@
   }
 
   // Carol
-  // '02a21a720090c57fa8ff0be873eeddf44202849ca08bbdc8897783db289c38010f',
+  // '020ef052047a5ebed8f368cf99cb9f70c0b03b3a13a677476fb63f798abfd450a7',
   // Dave
-  // '03e2ae321a9ae6d1e6a650cc31897a5f79251f08701fa5a8e3bf65ec591f6de5fb',
+  // '028ecac9a4b69486932aa4e8d82ce76b8adda2f28399507689365fad826a2f94d4',
   // Erin
-  // '039eb780b114dbee1147ae5513215d3915f322ce0980471185a2c2c764453a8bf7',
+  // '03334c2d3482ac3f552ce2279dfce58c06d61df5b889f43a9da5fa73a330c80b47',
   async function createPrism(prism: Prism) {
     const { label, members } = prism
 

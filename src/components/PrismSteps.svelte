@@ -35,9 +35,11 @@
     if (name.includes(' ')) {
       return 'name cannot have spaces'
     }
+
     if (
       !members
         .map((member) => member['name'])
+        .filter((name) => name !== '')
         .every((value, index, arr) => arr.indexOf(value) === index)
     ) {
       return 'name must be unique'
@@ -274,7 +276,7 @@
         {#each members as member, i}
           <div class="flex p-1">
             <p class="mr-2">{i + 1})</p>
-            <p class="mr-2">{member.percentage.toFixed(1)}% -</p>
+            <p class="mr-2">{member?.percentage?.toFixed(1)}% -</p>
             <p>{member.name}</p>
           </div>
         {/each}
