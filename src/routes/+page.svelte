@@ -11,7 +11,7 @@
   import Icon from '../components/Icon/Icon.svelte'
   import Triangle from '../components/Triangle.svelte'
   import PrismList from '../components/PrismList.svelte'
-  import { modalState$ } from '../streams.js'
+  import { modalState$, prisms$ } from '../streams.js'
 
   let ln: Lnmessage
   let connectionStatus$: Lnmessage['connectionStatus$']
@@ -23,14 +23,10 @@
   // Bob
   let address =
     '02e8cc0da4b828fb2d3bcf007f6e6fe249e132502eee623d760006805f73f639e9@roygbiv.money:9736'
-  // Polar
-  // let address = '03093b030028e642fc3b9a05c8eb549f202958e92143da2e85579b92ef0f49cc7d@localhost:7272'
   // let address = ''
   let addressError = ''
   // Bobs rune
   let rune = 'WQ5LoTjfxqznw7NkVUwVeGq_VHlwQsj7smzLl4m5VQY9MA=='
-  // Polar
-  // let rune = 'SFTxHiGlQrB2H19h7gCPzLuml3-xroW-sloI84CXRek9NQ=='
   // let rune = ''
   let runeError = ''
   let websocketProxy = 'wss://roygbiv.money:9836'
@@ -38,13 +34,11 @@
   let connectDisabled = false
   let bolt12 = ''
   let info: Info
-  let prisms: Prism[]
   let connecting = false
   let showSteps = false
 
   async function connect() {
     const { publicKey, ip, port } = parseNodeAddress(address)
-
     // https://github.com/aaronbarnardsound/lnmessage#initialisation
     ln = new Lnmessage({
       // The public key of the node you would like to connect to
@@ -73,7 +67,7 @@
     const infoResult = await request('getinfo')
     info = infoResult as Info
     const prismsResult = await request('listprisms')
-    prisms = prismsResult as Prism[]
+    prisms$.next(prismsResult as Prism[])
   }
 
   async function request(method: string, params?: unknown): Promise<unknown> {
@@ -126,7 +120,7 @@
       console.log(
         `
       
-      PRISM METHOD RESPONSE =
+      CREATE PRISM METHOD RESPONSE =
       
       `,
         result,
@@ -136,11 +130,13 @@
       )
       bolt12 = (result as { bolt12: string }).bolt12
       modalState$.next('qr')
+      const prismsResult = await request('listprisms')
+      prisms$.next(prismsResult as Prism[])
     } catch (error) {
       console.log(
         `
       
-      PRISM METHOD ERROR = 
+      CREATE PRISM METHOD ERROR = 
       
       `,
         error,
@@ -227,7 +223,7 @@
 
     <!-- Prism List -->
     {#if $connectionStatus$ === 'connected' && !showSteps}
-      <PrismList {prisms} showSteps={() => (showSteps = true)} />
+      <PrismList showSteps={() => (showSteps = true)} />
     {/if}
 
     <!-- Prism Steps -->

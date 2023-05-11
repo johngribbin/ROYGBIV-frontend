@@ -1,15 +1,14 @@
 <script lang="ts">
-  import type { Prism } from '../types'
   import Button from './Button.svelte'
-  export let prisms: Prism[]
+  import { prisms$ } from '../streams'
 
   export let showSteps: () => void
 </script>
 
-<h1 class="mb-4 text-3xl">Your prisms</h1>
-<div class="flex overflow-auto max-w-md">
-  {#if prisms?.length}
-    {#each prisms as { label, bolt12, members }}
+{#if $prisms$?.length}
+  <h1 class="mb-4 text-3xl">Your prisms</h1>
+  <div class="flex overflow-auto w-full max-w-md">
+    {#each $prisms$ as { label, bolt12, members }}
       <div class="border max-w-md">
         <div class="p-2">
           {label}
@@ -26,8 +25,8 @@
         {/each}
       </div>
     {/each}
-  {/if}
-</div>
+  </div>
+{/if}
 
 <div class="mt-8 w-full text-center">
   <Button on:click={showSteps} format={'primary'}>Create Prism</Button>
