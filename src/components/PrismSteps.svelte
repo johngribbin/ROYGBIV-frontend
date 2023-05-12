@@ -4,6 +4,7 @@
   import type { Member } from '../types'
   import { nodePublicKeyRegex } from '../utils'
   import Button from './Button.svelte'
+  import PrismSummary from './PrismSummary.svelte'
   import Slide from './Slide.svelte'
 
   export let finish = (args: any) => {} // no-operation function
@@ -269,18 +270,7 @@
   <Slide direction={slideDirection}>
     <div class="max-w-sm">
       <h1 class="text-4xl">Summary</h1>
-      <p class="mt-4 text-md">
-        {label} has {members.length} members with the following splits:
-      </p>
-      <div class="mt-6">
-        {#each members as member, i}
-          <div class="flex p-1">
-            <p class="mr-2">{i + 1})</p>
-            <p class="mr-2">{member?.percentage?.toFixed(1)}% -</p>
-            <p>{member.name}</p>
-          </div>
-        {/each}
-      </div>
+      <PrismSummary prism={{ label, members }} />
       <div class="mt-8 flex w-full justify-between">
         <Button format="secondary" on:click={() => back()}>Back</Button>
         <Button format="primary" on:click={() => finish({ label, members })}>Finish</Button>
