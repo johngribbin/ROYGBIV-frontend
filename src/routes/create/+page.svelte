@@ -142,7 +142,7 @@
   }
 
   onMount(() => {
-    if (!$nodeInfo$!) {
+    if (!$nodeInfo$) {
       goto('/connect')
     }
   })
