@@ -7,28 +7,28 @@
   import { truncateValue, writeClipboardValue } from '../utils'
   import { browser } from '$app/environment'
   import type QRCodeStyling from 'qr-code-styling'
+  import { bolt12$ } from '../streams'
 
-  export let value: string | null
   export let size = Math.min(window.innerWidth - 50, 400)
 
   export function getQrImage() {
     return canvas?.toDataURL()
   }
 
-  const truncated = truncateValue(value as string)
+  const truncated = truncateValue($bolt12$ as string)
 
   let canvas: HTMLCanvasElement | null = null
   let node: HTMLDivElement
   let qrCode: QRCodeStyling
   let rendered = false
 
-  $: if (browser && value && node && !rendered) {
+  $: if (browser && $bolt12$ && node && !rendered) {
     import('qr-code-styling').then(({ default: QRCodeStyling }) => {
       qrCode = new QRCodeStyling({
         width: size,
         height: size,
         type: 'svg',
-        data: `lightning:${value}`.toUpperCase(),
+        data: `lightning:${$bolt12$}`.toUpperCase(),
         imageOptions: { hideBackgroundDots: false, imageSize: 0.25, margin: 0 },
         dotsOptions: {
           type: 'dots',
@@ -56,8 +56,8 @@
   let copyTimeout: NodeJS.Timeout
 
   async function copyBolt12() {
-    if (value) {
-      copySuccess = await writeClipboardValue(value)
+    if ($bolt12$) {
+      copySuccess = await writeClipboardValue($bolt12$)
 
       if (copySuccess) {
         copyTimeout = setTimeout(() => (copySuccess = false), 3000)
