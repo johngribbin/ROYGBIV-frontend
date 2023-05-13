@@ -6,7 +6,7 @@
 
 ROYGBIV creates Lightning prisms, which are BOLT 12 offers that split Lightning payments to different parties at percentages you define.
 
-This repository contains a progressive web app - the frontend component to ROYGBIV. The backend plugin is available [here](https://github.com/daGoodenough/ROYGBIV-backend) and requires Core Lightning with the runtime flag 'experimental-dual-fund.'
+This repository contains a progressive web app - the frontend component to ROYGBIV. The backend plugin is available [here](https://github.com/farscapian/clams-app-docker/blob/main/roygbiv/cln-plugins/prism-plugin.py) and requires Core Lightning with the runtime flag 'experimental-dual-fund.'
 
 BOLT 12 offers are static QR payment codes that can be reused again and again. Currently, ROYGBIV supports prism payouts to node pubkeys via keysend.
 
@@ -39,4 +39,4 @@ npm run dev
 
 4. Open [http://localhost:5173](http://localhost:5173) in your browser
 
-5. Follow the instructions at [https://github.com/farscapian/clams-app-docker](https://github.com/farscapian/clams-app-docker) to set up the backend
+5. This app requires a core lightning backend. You can bring your own core lightning backend, or use [this repo](https://github.com/farscapian/clams-app-docker) that was used to create (roygbiv.money)[https://roygbiv.money].
