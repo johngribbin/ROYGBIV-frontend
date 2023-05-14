@@ -1,6 +1,6 @@
 import Lnmessage from 'lnmessage'
 import type { Info, Prism } from './types'
-import { bolt12$, modalState$, nodeInfo$, prisms$ } from './streams'
+import { nodeInfo$, prisms$ } from './streams'
 import { parseNodeAddress } from './utils'
 
 export let ln: Lnmessage
@@ -30,11 +30,6 @@ export async function connect(address: string, runeToken: string, websocketProxy
 
   // Initiate the connection to the remote node
   await ln.connect()
-  // Fetch node info & prism list
-  const nodeInfoResult = await request('getinfo')
-  nodeInfo$.next(nodeInfoResult as Info)
-  const prismsResult = await request('listprisms')
-  prisms$.next(prismsResult as Prism[])
 }
 
 export async function request(method: string, params?: unknown): Promise<unknown> {
@@ -61,6 +56,26 @@ export async function request(method: string, params?: unknown): Promise<unknown
   }
 }
 
+export async function getInfo() {
+  try {
+    const result = (await request('getinfo')) as Info
+    nodeInfo$.next(result)
+    return result
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function listPrisms() {
+  try {
+    const result = (await request('listprisms')) as Prism[]
+    prisms$.next(result)
+    return result
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function createPrism(prism: Prism) {
   const { label, members } = prism
 
@@ -73,14 +88,9 @@ export async function createPrism(prism: Prism) {
     }))
   }
 
-  console.log('PARAMS = ', params)
-
   try {
     const result = await request('createprism', params)
-    bolt12$.next((result as { bolt12: string }).bolt12)
-    modalState$.next('qr')
-    const prismsResult = await request('listprisms')
-    prisms$.next(prismsResult as Prism[])
+    return result as Prism
   } catch (error) {
     console.error(error)
   }

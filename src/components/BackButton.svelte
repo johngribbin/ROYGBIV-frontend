@@ -1,5 +1,4 @@
 <script lang="ts">
-  //import { translate } from '$lib/i18n/translations'
   import caret from '../icons/caret'
 </script>
 

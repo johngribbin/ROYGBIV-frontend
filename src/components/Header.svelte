@@ -2,7 +2,7 @@
   import { nodeInfo$ } from '../streams'
 </script>
 
-<header class="absolute top-0 flex justify-between p-6 w-full items-center">
+<header class="absolute top-0 flex justify-between p-4 w-full items-center">
   {#if $nodeInfo$}
     <h1 class="font-black text-3xl">ROYGBIV</h1>
     <div class="flex items-center">

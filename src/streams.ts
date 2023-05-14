@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs'
 import type { Info, Prism } from './types'
 
-export const modalState$ = new BehaviorSubject<'connect' | 'qr' | null>(null)
+export const modalState$ = new BehaviorSubject<'qr' | null>(null)
 
 export const nodeInfo$ = new BehaviorSubject<Info | null>(null)
 

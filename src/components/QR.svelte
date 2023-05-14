@@ -1,13 +1,12 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
   import { onDestroy } from 'svelte'
-  import copy from '../icons/copy'
   import photo from '../icons/photo'
-  import check from '../icons/check'
   import { truncateValue, writeClipboardValue } from '../utils'
   import { browser } from '$app/environment'
   import type QRCodeStyling from 'qr-code-styling'
   import { bolt12$ } from '../streams'
+  import CopyString from './CopyString.svelte'
 
   export let size = Math.min(window.innerWidth - 50, 400)
 
@@ -78,13 +77,7 @@
 >
   <div class="rounded overflow-hidden transition-opacity" bind:this={node} />
   <div class="absolute -bottom-9 right-0 mt-2 flex items-center gap-x-2">
-    <button on:click={copyBolt12} class="flex items-center">
-      {#if copySuccess}
-        <div in:fade|local={{ duration: 250 }} class="w-8 text-utility-success">{@html check}</div>
-      {:else}
-        <div in:fade|local={{ duration: 250 }} class="w-8">{@html copy}</div>
-      {/if}
-    </button>
+    <CopyString stringVal={$bolt12$} />
     <button
       on:click={() => qrCode.download({ extension: 'png', name: truncated })}
       class="flex items-center"

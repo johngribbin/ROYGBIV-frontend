@@ -4,6 +4,7 @@
   import Slide from './Slide.svelte'
   import PrismSummary from './PrismSummary.svelte'
   import { goto } from '$app/navigation'
+  import { fade } from 'svelte/transition'
 
   type Slides = typeof slides
   type SlideStep = Slides[number]
@@ -34,10 +35,10 @@
   }
 </script>
 
-<h1 class="mb-4 text-3xl">Your prisms</h1>
-{#each $prisms$ as prism, i}
-  <div class="w-full max-w-md">
-    <div class="max-w-sm">
+{#if $prisms$.length}
+  <h1 in:fade|local={{ duration: 250 }} class="text-4xl">Your prisms</h1>
+  {#each $prisms$ as prism, i}
+    <div in:fade|local={{ duration: 250 }}>
       {#if slide === i}
         <Slide direction={slideDirection}>
           <PrismSummary {prism} />
@@ -53,5 +54,10 @@
         </Slide>
       {/if}
     </div>
+  {/each}
+{:else}
+  <div class="text-center">
+    <p class="mb-6">Create your first prism!</p>
+    <Button on:click={() => goto('/create')} format={'primary'}>Create</Button>
   </div>
-{/each}
+{/if}

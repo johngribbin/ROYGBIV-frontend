@@ -10,7 +10,9 @@
 </script>
 
 <Header />
-<slot />
+<main class="w-screen h-screen flex flex-col items-center justify-center relative p-4">
+  <slot />
+</main>
 <!-- QR Modal -->
 {#if $modalState$ === 'qr'}
   <div

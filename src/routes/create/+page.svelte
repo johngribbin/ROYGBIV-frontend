@@ -1,14 +1,14 @@
 <script lang="ts">
   import minus from '../../icons/minus'
   import plus from '../../icons/plus'
-  import { createPrism } from '../../ln-message'
+  import { createPrism, listPrisms } from '../../ln-message'
   import type { Member } from '../../types'
-  import { nodePublicKeyRegex } from '../../utils'
+  import { addMemberPercentages, nodePublicKeyRegex } from '../../utils'
   import Button from '../../components/Button.svelte'
   import PrismSummary from '../../components/PrismSummary.svelte'
   import Slide from '../../components/Slide.svelte'
   import { goto } from '$app/navigation'
-  import { nodeInfo$ } from '../../streams'
+  import { bolt12$, modalState$, nodeInfo$ } from '../../streams'
   import { onMount } from 'svelte'
 
   type Slides = typeof slides
@@ -111,15 +111,7 @@
   // Calculate percentage values for each member
   $: {
     if (members.length) {
-      const allSplits = members.map((member) => member.split).reduce((a, b) => a + b)
-      const updatedMembers = members.map((member) => {
-        return {
-          ...member,
-          percentage: member.split ? (member.split / allSplits) * 100 : 0
-        }
-      })
-
-      members = [...updatedMembers]
+      members = addMemberPercentages(members)
     }
   }
 
@@ -148,7 +140,7 @@
   })
 </script>
 
-<main class="w-screen h-screen flex flex-col items-center justify-center relative">
+<div class="w-full max-w-sm">
   <!-- Name your prism -->
   {#if slide === 0}
     <Slide direction={slideDirection}>
@@ -284,9 +276,19 @@
         <PrismSummary prism={{ label, members }} />
         <div class="mt-8 flex w-full justify-between">
           <Button format="secondary" on:click={() => back()}>Back</Button>
-          <Button format="primary" on:click={() => createPrism({ label, members })}>Finish</Button>
+          <Button
+            format="primary"
+            on:click={async () => {
+              const prism = await createPrism({ label, members })
+              if (prism?.bolt12) {
+                bolt12$.next(prism.bolt12)
+                modalState$.next('qr')
+                listPrisms()
+              }
+            }}>Finish</Button
+          >
         </div>
       </div>
     </Slide>
   {/if}
-</main>
+</div>

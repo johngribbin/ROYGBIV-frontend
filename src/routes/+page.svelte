@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from '../components/Button.svelte'
   import PrismList from '../components/ListPrisms.svelte'
-  import { nodeInfo$, prisms$ } from '../streams.js'
+  import { nodeInfo$ } from '../streams.js'
   import { goto } from '$app/navigation'
 </script>
 
@@ -13,28 +13,23 @@
     rel="stylesheet"
   />
 </svelte:head>
-<main class="w-screen h-screen flex flex-col items-center justify-center relative">
-  <!-- Content Container -->
-  <div class="max-w-4xl p-6">
-    {#if !$nodeInfo$}
-      <div class="flex justify-center max-w-lg">
-        <!-- Animation -->
-        <!-- svelte-ignore a11y-media-has-caption -->
-        <video src="triangle.mp4" poster="triangle.jpg" autoplay loop>ROYGBIV</video>
-      </div>
-
-      <div class="flex flex-col items-center justify-center bg-black">
-        <Button on:click={() => goto('/connect')} icon="ArrowUpCircle">Connect</Button>
-        <p class="max-w-md mt-8 text-center">
-          ROYGBIV creates lightning prisms, which are special BOLT12 offers. Any payments received
-          to these offers will split out to multiple recipients. Connect your Core Lightning node to
-          get started.
-        </p>
-      </div>
-    {/if}
-
-    {#if $prisms$.length}
-      <PrismList />
-    {/if}
+{#if !$nodeInfo$}
+  <div class="flex justify-center max-w-md">
+    <!-- Animation -->
+    <!-- svelte-ignore a11y-media-has-caption -->
+    <video src="triangle.mp4" poster="triangle.jpg" autoplay loop>ROYGBIV</video>
   </div>
-</main>
+
+  <div class="flex flex-col items-center justify-center bg-black">
+    <Button on:click={() => goto('/connect')} icon="ArrowUpCircle">Connect</Button>
+    <p class="max-w-md mt-8 text-center">
+      ROYGBIV creates lightning prisms, which are special BOLT12 offers. Any payments received to
+      these offers will split out to multiple recipients. Connect your Core Lightning node to get
+      started.
+    </p>
+  </div>
+{:else}
+  <div class="w-full max-w-sm">
+    <PrismList />
+  </div>
+{/if}
