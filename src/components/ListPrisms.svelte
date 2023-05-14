@@ -30,34 +30,36 @@
 
   // Update slides based on prism count
   $: {
-    const prismSlides = Array.from({ length: $prisms$?.length - 1 }, (_, index) => index + 1)
+    const prismSlides = Array.from({ length: $prisms$?.data.length - 1 }, (_, index) => index + 1)
     slides = [0, ...prismSlides]
   }
 </script>
 
-{#if $prisms$.length}
-  <h1 in:fade|local={{ duration: 250 }} class="text-4xl">Your prisms</h1>
-  {#each $prisms$ as prism, i}
-    <div in:fade|local={{ duration: 250 }}>
-      {#if slide === i}
-        <Slide direction={slideDirection}>
-          <PrismSummary {prism} />
-          <div class="mt-8 flex w-full justify-between">
-            <Button disabled={i === 0} format="secondary" on:click={() => back()}>Back</Button>
-            <Button on:click={() => goto('/create')} format={'primary'}>Create</Button>
-            <Button
-              disabled={slide === slides.length - 1}
-              format="secondary"
-              on:click={() => next()}>Next</Button
-            >
-          </div>
-        </Slide>
-      {/if}
+{#if !$prisms$.loading}
+  {#if $prisms$.data.length}
+    <h1 in:fade|local={{ duration: 250 }} class="text-4xl">Your prisms</h1>
+    {#each $prisms$.data as prism, i}
+      <div in:fade|local={{ duration: 250 }}>
+        {#if slide === i}
+          <Slide direction={slideDirection}>
+            <PrismSummary {prism} />
+            <div class="mt-8 flex w-full justify-between">
+              <Button disabled={i === 0} format="secondary" on:click={() => back()}>Back</Button>
+              <Button on:click={() => goto('/create')} format={'primary'}>Create</Button>
+              <Button
+                disabled={slide === slides.length - 1}
+                format="secondary"
+                on:click={() => next()}>Next</Button
+              >
+            </div>
+          </Slide>
+        {/if}
+      </div>
+    {/each}
+  {:else}
+    <div class="text-center">
+      <p class="mb-6">Create your first prism!</p>
+      <Button on:click={() => goto('/create')} format={'primary'}>Create</Button>
     </div>
-  {/each}
-{:else}
-  <div class="text-center">
-    <p class="mb-6">Create your first prism!</p>
-    <Button on:click={() => goto('/create')} format={'primary'}>Create</Button>
-  </div>
+  {/if}
 {/if}

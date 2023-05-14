@@ -134,7 +134,7 @@
   }
 
   onMount(() => {
-    if (!$nodeInfo$) {
+    if (!$nodeInfo$.data) {
       goto('/connect')
     }
   })
@@ -281,8 +281,14 @@
             on:click={async () => {
               const prism = await createPrism({ label, members })
               if (prism?.bolt12) {
-                bolt12$.next(prism.bolt12)
-                modalState$.next('qr')
+                bolt12$.next({
+                  ...$bolt12$,
+                  data: prism.bolt12
+                })
+                modalState$.next({
+                  ...$modalState$,
+                  data: 'qr'
+                })
                 listPrisms()
               }
             }}>Finish</Button

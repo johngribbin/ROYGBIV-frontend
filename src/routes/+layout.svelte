@@ -14,7 +14,7 @@
   <slot />
 </main>
 <!-- QR Modal -->
-{#if $modalState$ === 'qr'}
+{#if $modalState$.data === 'qr'}
   <div
     transition:fade
     class="flex w-full h-full top-0 absolute backdrop-blur-sm bg-black/30 flex flex-col items-center justify-center z-10"
@@ -22,7 +22,10 @@
     <button
       class="w-8 cursor-pointer absolute top-4 right-4 z-[99]"
       on:click={() => {
-        modalState$.next(null)
+        modalState$.next({
+          ...$modalState$,
+          data: null
+        })
         goto('/')
       }}
     >

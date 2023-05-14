@@ -1,9 +1,9 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
-  import { ln, connect, getInfo, listPrisms } from '../../ln-message'
+  import { connect, getInfo, listPrisms } from '../../ln-message'
   import Button from '../../components/Button.svelte'
   import { parseNodeAddress, validateParsedNodeAddress } from '../../utils'
-  import { nodeInfo$ } from '../../streams'
+  import { connectionStatus$, nodeInfo$ } from '../../streams'
   import { goto } from '$app/navigation'
 
   // Bob
@@ -55,15 +55,7 @@
     }
   }
 
-  // @TODO fix button connection status
-  let connectionStatus$
-
-  $: if (ln) {
-    connectionStatus$ = ln.connectionStatus$
-    console.log('connectionStatus$ = ', connectionStatus$)
-  }
-
-  $: if ($nodeInfo$) {
+  $: if ($nodeInfo$.data) {
     goto('/')
   }
 </script>
@@ -127,7 +119,7 @@
         await listPrisms()
       }}
     >
-      {$connectionStatus$ === 'connecting' ? '...' : 'Connect'}
+      {$connectionStatus$.data === 'connecting' ? '...' : 'Connect'}
     </Button>
   </div>
 </div>

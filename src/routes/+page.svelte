@@ -13,7 +13,7 @@
     rel="stylesheet"
   />
 </svelte:head>
-{#if !$nodeInfo$}
+{#if !$nodeInfo$.data}
   <div class="flex justify-center max-w-md">
     <!-- Animation -->
     <!-- svelte-ignore a11y-media-has-caption -->

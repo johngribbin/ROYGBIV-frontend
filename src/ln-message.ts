@@ -1,6 +1,6 @@
 import Lnmessage from 'lnmessage'
 import type { Info, Prism } from './types'
-import { nodeInfo$, prisms$ } from './streams'
+import { nodeInfo$, prisms$, connectionStatus$ } from './streams'
 import { parseNodeAddress } from './utils'
 
 export let ln: Lnmessage
@@ -28,8 +28,25 @@ export async function connect(address: string, runeToken: string, websocketProxy
     }
   })
 
-  // Initiate the connection to the remote node
-  await ln.connect()
+  try {
+    connectionStatus$.next({
+      data: 'connecting',
+      loading: true
+    })
+    // Initiate the connection to the remote node
+    await ln.connect()
+
+    connectionStatus$.next({
+      data: 'connected',
+      loading: false
+    })
+  } catch (error) {
+    connectionStatus$.next({
+      data: 'disconnected',
+      loading: false,
+      error: String(error)
+    })
+  }
 }
 
 export async function request(method: string, params?: unknown): Promise<unknown> {
@@ -58,21 +75,43 @@ export async function request(method: string, params?: unknown): Promise<unknown
 
 export async function getInfo() {
   try {
+    nodeInfo$.next({
+      data: null,
+      loading: true
+    })
     const result = (await request('getinfo')) as Info
-    nodeInfo$.next(result)
+    nodeInfo$.next({
+      data: result,
+      loading: false
+    })
     return result
   } catch (error) {
-    console.error(error)
+    nodeInfo$.next({
+      data: null,
+      loading: false,
+      error: String(error)
+    })
   }
 }
 
 export async function listPrisms() {
   try {
+    prisms$.next({
+      data: [],
+      loading: true
+    })
     const result = (await request('listprisms')) as Prism[]
-    prisms$.next(result)
+    prisms$.next({
+      data: result,
+      loading: false
+    })
     return result
   } catch (error) {
-    console.error(error)
+    prisms$.next({
+      data: [],
+      loading: false,
+      error: String(error)
+    })
   }
 }
 

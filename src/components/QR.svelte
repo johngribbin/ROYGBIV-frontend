@@ -14,7 +14,7 @@
     return canvas?.toDataURL()
   }
 
-  const truncated = truncateValue($bolt12$ as string)
+  const truncated = truncateValue($bolt12$.data as string)
 
   let canvas: HTMLCanvasElement | null = null
   let node: HTMLDivElement
@@ -56,7 +56,7 @@
 
   async function copyBolt12() {
     if ($bolt12$) {
-      copySuccess = await writeClipboardValue($bolt12$)
+      copySuccess = await writeClipboardValue($bolt12$.data)
 
       if (copySuccess) {
         copyTimeout = setTimeout(() => (copySuccess = false), 3000)
@@ -77,7 +77,7 @@
 >
   <div class="rounded overflow-hidden transition-opacity" bind:this={node} />
   <div class="absolute -bottom-9 right-0 mt-2 flex items-center gap-x-2">
-    <CopyString stringVal={$bolt12$} />
+    <CopyString stringVal={$bolt12$.data} />
     <button
       on:click={() => qrCode.download({ extension: 'png', name: truncated })}
       class="flex items-center"
