@@ -246,7 +246,7 @@
               <textarea
                 id="destination"
                 class="border w-full p-2 rounded"
-                rows="1"
+                rows="2"
                 bind:value={member.destination}
                 placeholder="node public key"
               />
