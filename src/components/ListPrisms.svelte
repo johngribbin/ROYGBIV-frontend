@@ -3,6 +3,8 @@
   import { prisms$ } from '../streams'
   import Slide from './Slide.svelte'
   import PrismSummary from './PrismSummary.svelte'
+  import { goto } from '$app/navigation'
+  import { fade } from 'svelte/transition'
 
   type Slides = typeof slides
   type SlideStep = Slides[number]
@@ -11,8 +13,6 @@
   let slides = [0] // Default slides
   let slide: SlideStep = 0
   let previousSlide: SlideStep = 0
-
-  export let showSteps: () => void
 
   function back() {
     previousSlide = slides[slides.indexOf(slide) - 2]
@@ -30,22 +30,22 @@
 
   // Update slides based on prism count
   $: {
-    const prismSlides = Array.from({ length: $prisms$.length - 1 }, (_, index) => index + 1)
+    const prismSlides = Array.from({ length: $prisms$?.data.length - 1 }, (_, index) => index + 1)
     slides = [0, ...prismSlides]
   }
 </script>
 
-{#if $prisms$?.length}
-  <h1 class="mb-4 text-3xl">Your prisms</h1>
-  {#each $prisms$ as prism, i}
-    <div class="w-full max-w-md">
-      <div class="max-w-sm">
+{#if !$prisms$.loading}
+  {#if $prisms$.data.length}
+    <h1 in:fade|local={{ duration: 250 }} class="text-4xl">Your prisms</h1>
+    {#each $prisms$.data as prism, i}
+      <div in:fade|local={{ duration: 250 }}>
         {#if slide === i}
           <Slide direction={slideDirection}>
             <PrismSummary {prism} />
             <div class="mt-8 flex w-full justify-between">
               <Button disabled={i === 0} format="secondary" on:click={() => back()}>Back</Button>
-              <Button on:click={showSteps} format={'primary'}>Create</Button>
+              <Button on:click={() => goto('/create')} format={'primary'}>Create</Button>
               <Button
                 disabled={slide === slides.length - 1}
                 format="secondary"
@@ -55,6 +55,11 @@
           </Slide>
         {/if}
       </div>
+    {/each}
+  {:else}
+    <div class="text-center">
+      <p class="mb-6">Create your first prism!</p>
+      <Button on:click={() => goto('/create')} format={'primary'}>Create</Button>
     </div>
-  {/each}
+  {/if}
 {/if}

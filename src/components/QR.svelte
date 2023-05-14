@@ -1,34 +1,33 @@
 <script lang="ts">
   import { fade } from 'svelte/transition'
   import { onDestroy } from 'svelte'
-  import copy from '../icons/copy'
   import photo from '../icons/photo'
-  import check from '../icons/check'
   import { truncateValue, writeClipboardValue } from '../utils'
   import { browser } from '$app/environment'
   import type QRCodeStyling from 'qr-code-styling'
+  import { bolt12$ } from '../streams'
+  import CopyString from './CopyString.svelte'
 
-  export let value: string | null
   export let size = Math.min(window.innerWidth - 50, 400)
 
   export function getQrImage() {
     return canvas?.toDataURL()
   }
 
-  const truncated = truncateValue(value as string)
+  const truncated = truncateValue($bolt12$.data as string)
 
   let canvas: HTMLCanvasElement | null = null
   let node: HTMLDivElement
   let qrCode: QRCodeStyling
   let rendered = false
 
-  $: if (browser && value && node && !rendered) {
+  $: if (browser && $bolt12$ && node && !rendered) {
     import('qr-code-styling').then(({ default: QRCodeStyling }) => {
       qrCode = new QRCodeStyling({
         width: size,
         height: size,
         type: 'svg',
-        data: `lightning:${value}`.toUpperCase(),
+        data: `lightning:${$bolt12$}`.toUpperCase(),
         imageOptions: { hideBackgroundDots: false, imageSize: 0.25, margin: 0 },
         dotsOptions: {
           type: 'dots',
@@ -56,8 +55,8 @@
   let copyTimeout: NodeJS.Timeout
 
   async function copyBolt12() {
-    if (value) {
-      copySuccess = await writeClipboardValue(value)
+    if ($bolt12$) {
+      copySuccess = await writeClipboardValue($bolt12$.data)
 
       if (copySuccess) {
         copyTimeout = setTimeout(() => (copySuccess = false), 3000)
@@ -78,13 +77,7 @@
 >
   <div class="rounded overflow-hidden transition-opacity" bind:this={node} />
   <div class="absolute -bottom-9 right-0 mt-2 flex items-center gap-x-2">
-    <button on:click={copyBolt12} class="flex items-center">
-      {#if copySuccess}
-        <div in:fade|local={{ duration: 250 }} class="w-8 text-utility-success">{@html check}</div>
-      {:else}
-        <div in:fade|local={{ duration: 250 }} class="w-8">{@html copy}</div>
-      {/if}
-    </button>
+    <CopyString stringVal={$bolt12$.data} />
     <button
       on:click={() => qrCode.download({ extension: 'png', name: truncated })}
       class="flex items-center"

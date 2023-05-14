@@ -1,3 +1,5 @@
+import type { Member } from './types'
+
 export type ParsedNodeAddress = {
   publicKey: string
   ip: string
@@ -50,4 +52,30 @@ export async function writeClipboardValue(text: string): Promise<boolean> {
   } catch (error) {
     return false
   }
+}
+
+export function addMemberPercentages(members: Member[]) {
+  const allSplits = members.map((member) => member.split).reduce((a, b) => a + b)
+  const updatedMembers = members.map((member) => {
+    return {
+      ...member,
+      percentage: member.split ? (member.split / allSplits) * 100 : 0
+    }
+  })
+
+  return [...updatedMembers]
+}
+
+export function shortenString(str: string, maxLength = 16) {
+  if (str.length <= maxLength) {
+    return str
+  }
+
+  const ellipsis = '...'
+  const truncatedLength = maxLength - ellipsis.length
+
+  const start = str.substring(0, Math.ceil(truncatedLength / 2))
+  const end = str.substring(str.length - Math.floor(truncatedLength / 2))
+
+  return start + ellipsis + end
 }
