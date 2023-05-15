@@ -6,6 +6,8 @@
   import { goto } from '$app/navigation'
   import { fade } from 'svelte/transition'
   import plus from '../icons/plus'
+  import arrowLeft from '../icons/arrow-left'
+  import arrowRight from '../icons/arrow-right'
 
   type Slides = typeof slides
   type SlideStep = Slides[number]
@@ -52,11 +54,13 @@
             <Slide direction={slideDirection}>
               <PrismSummary {prism} />
               <div class="mt-8 flex w-full justify-between">
-                <Button disabled={i === 0} format="secondary" on:click={() => back()}>Back</Button>
+                <Button disabled={i === 0} format="secondary" on:click={() => back()}
+                  ><div class="w-6">{@html arrowLeft}</div></Button
+                >
                 <Button
                   disabled={slide === slides.length - 1}
                   format="secondary"
-                  on:click={() => next()}>Next</Button
+                  on:click={() => next()}><div class="w-6">{@html arrowRight}</div></Button
                 >
               </div>
             </Slide>
