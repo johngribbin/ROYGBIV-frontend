@@ -10,6 +10,8 @@
   import { goto } from '$app/navigation'
   import { bolt12$, modalState$, nodeInfo$ } from '../../streams'
   import { onMount } from 'svelte'
+  import arrowLeft from '../../icons/arrow-left'
+  import arrowRight from '../../icons/arrow-right'
 
   type Slides = typeof slides
   type SlideStep = Slides[number]
@@ -189,7 +191,7 @@
             disabled={!label || labelError !== ''}
             format="secondary"
             fullWidth={true}
-            on:click={() => next()}>Next</Button
+            on:click={() => next()}><div class="w-6">{@html arrowRight}</div></Button
           >
         </div>
       </div>
@@ -257,11 +259,13 @@
           </div>
           <!-- Buttons -->
           <div class="mt-8 flex w-full justify-between">
-            <Button format="secondary" on:click={() => back()}>Back</Button>
+            <Button format="secondary" on:click={() => back()}
+              ><div class="w-6">{@html arrowLeft}</div></Button
+            >
             <Button
               disabled={isMemberInvalid(members[i])}
               format="secondary"
-              on:click={() => next()}>Next</Button
+              on:click={() => next()}><div class="w-6">{@html arrowRight}</div></Button
             >
           </div>
         </div>
@@ -275,7 +279,9 @@
         <h1 class="text-4xl">Summary</h1>
         <PrismSummary prism={{ label, members }} />
         <div class="mt-8 flex w-full justify-between">
-          <Button format="secondary" on:click={() => back()}>Back</Button>
+          <Button format="secondary" on:click={() => back()}
+            ><div class="w-6">{@html arrowLeft}</div></Button
+          >
           <Button
             format="primary"
             on:click={async () => {

@@ -29,7 +29,5 @@
     </p>
   </div>
 {:else}
-  <div class="w-full max-w-sm">
-    <PrismList />
-  </div>
+  <PrismList />
 {/if}
