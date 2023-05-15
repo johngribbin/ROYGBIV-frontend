@@ -35,10 +35,10 @@
 </h1>
 <div class="mt-4 flex flex-col gap-2">
   {#each prism.members as member, i}
-    <div class="flex items-center">
-      <p class="mr-2">{i + 1})</p>
-      <p class="mr-2">{member?.percentage?.toFixed(1)}% -</p>
-      <p class="mr-2">{member.name}</p>
+    <div class="flex items-center gap-2">
+      <p class="text-sm">{i + 1})</p>
+      <p>{member?.percentage?.toFixed(1)}% -</p>
+      <p>{member.name}</p>
       <p>({shortenString(member.destination, 9)})</p>
       <CopyString stringVal={member.destination} />
     </div>

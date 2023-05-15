@@ -50,15 +50,6 @@ export async function connect(address: string, runeToken: string, websocketProxy
 }
 
 export async function request(method: string, params?: unknown): Promise<unknown> {
-  console.log(
-    `
-  
-  LN = 
-  
-  `,
-    ln
-  )
-
   try {
     const result = await ln.commando({
       method,
