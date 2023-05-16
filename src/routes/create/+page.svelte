@@ -145,7 +145,7 @@
 <div class="w-full max-w-sm">
   <!-- Name your prism -->
   {#if slide === 0}
-    <Slide direction={slideDirection}>
+    <Slide back={() => goto('/')} direction={slideDirection}>
       <div class="max-w-sm">
         <h1 class="text-4xl">Name your prism</h1>
         <input

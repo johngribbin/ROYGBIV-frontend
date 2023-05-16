@@ -33,7 +33,7 @@
     <div on:click={showQR} class="w-8 cursor-pointer">{@html qrIcon}</div>
   {/if}
 </h1>
-<div class="mt-4 flex flex-col gap-2">
+<div class="mt-4 flex flex-col gap-2 h-36 overflow-auto">
   {#each prism.members as member, i}
     <div class="flex items-center gap-2">
       <p class="text-sm">{i + 1})</p>

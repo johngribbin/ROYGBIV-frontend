@@ -23,7 +23,7 @@ done
 cd ..
 
 if [ ! -d "./clams-app-docker" ]; then
-    git clone https://github.com/farscapian/clams-app-docker "$CLAMS_DOCKER_APP_PATH"
+    git clone https://github.com/farscapian/clams-app-docker ./clams-app-docker
 fi
 
 cd ./clams-app-docker
