@@ -91,12 +91,12 @@ export async function listPrisms() {
       data: [],
       loading: true
     })
-    const result = (await request('listprisms')) as Prism[]
+    const { prisms } = (await request('listprisms')) as { prisms: Prism[] }
     prisms$.next({
-      data: result,
+      data: prisms,
       loading: false
     })
-    return result
+    return prisms
   } catch (error) {
     prisms$.next({
       data: [],

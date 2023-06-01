@@ -7,15 +7,14 @@
   import { goto } from '$app/navigation'
 
   // Bob
-  let address =
-    '02e8cc0da4b828fb2d3bcf007f6e6fe249e132502eee623d760006805f73f639e9@roygbiv.money:9736'
+  let address = ''
   // let address = ''
   let addressError = ''
   // Bobs rune
-  let rune = 'WQ5LoTjfxqznw7NkVUwVeGq_VHlwQsj7smzLl4m5VQY9MA=='
+  let rune = ''
   // let rune = ''
   let runeError = ''
-  let websocketProxy = 'wss://roygbiv.money:9836'
+  let websocketProxy = ''
   let websocketProxyError = ''
   let connectDisabled = false
 
