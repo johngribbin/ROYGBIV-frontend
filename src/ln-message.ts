@@ -113,6 +113,7 @@ export async function createPrism(prism: Prism) {
     label,
     members: members.map((member) => ({
       name: member.name,
+      type: member.type,
       destination: member.destination,
       split: member.split
     }))

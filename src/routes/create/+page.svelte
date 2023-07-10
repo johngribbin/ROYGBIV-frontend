@@ -21,7 +21,7 @@
   let slide: SlideStep = 0
   let previousSlide: SlideStep = 0
   let label: string = '' // prism name
-  let memberCount = 2 // minimum of 2 members in a prism
+  let memberCount = 1 // minimum of 1 members in a prism
   let members: Member[] = []
   let labelError = '' // Prism label validation
 
@@ -99,6 +99,7 @@
       name: '',
       nameError: '',
       destination: '',
+      type: '', 
       destinationError: '',
       split: 1, // Default to all members having same share
       splitError: '',
@@ -244,13 +245,19 @@
             {/if}
             <!-- Destination -->
             <div class="mt-6">
+              <label class="mb-1 block" for="type">Type</label>
+              <select bind:value={member.type}   class="border w-full p-2 rounded"> 
+                <option style="color=black" value="bolt12" selected>Bolt12</option>
+                <option style="color=black" value="keysend">Keysend</option>
+                <option style="color=black" value="other">Other</option>
+              </select>
               <label class="mb-1 block" for="destination">Destination</label>
               <textarea
                 id="destination"
                 class="border w-full p-2 rounded"
                 rows="2"
                 bind:value={member.destination}
-                placeholder="node public key"
+                placeholder="Bolt12 offer"
               />
               {#if member.destinationError}
                 <p class="text-sm text-red-500">{member.destinationError}</p>
