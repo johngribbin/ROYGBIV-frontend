@@ -3,7 +3,7 @@
   import plus from '../../icons/plus'
   import { createPrism, listPrisms } from '../../ln-message'
   import type { Member } from '../../types'
-  import { addMemberPercentages, nodePublicKeyRegex } from '../../utils'
+  import { addMemberPercentages, nodePublicKeyRegex, bolt12OfferRegex } from '../../utils'
   import Button from '../../components/Button.svelte'
   import PrismSummary from '../../components/PrismSummary.svelte'
   import Slide from '../../components/Slide.svelte'
@@ -53,10 +53,19 @@
   }
 
   // Member destination validation
-  function validateDestination(destination: string) {
-    if (!nodePublicKeyRegex.test(destination)) {
-      return 'destination is invalid node public key'
-    }
+  function validateDestination(type: string, destination: string) {
+    if (type == "bolt12") {
+      if (!bolt12OfferRegex.test(destination)) {
+        return 'destination is invalid Bolt12 offer.'
+      }
+    } 
+    
+    if (type == "keysend") {
+      if (!nodePublicKeyRegex.test(destination)) {
+        return 'destination is invalid node public key.'
+      }
+    } 
+
     return ''
   }
 
@@ -131,7 +140,7 @@
   $: {
     members.forEach((member) => {
       member.nameError = member.name ? validateName(member.name) : ''
-      member.destinationError = member.destination ? validateDestination(member.destination) : ''
+      member.destinationError = member.destination ? validateDestination(member.type, member.destination) : ''
       member.splitError = validateSplit(member.split)
     })
   }
@@ -246,10 +255,10 @@
             <!-- Destination -->
             <div class="mt-6">
               <label class="mb-1 block" for="type">Type</label>
-              <select bind:value={member.type}   class="border w-full p-2 rounded"> 
-                <option style="color=black" value="bolt12" selected>Bolt12</option>
-                <option style="color=black" value="keysend">Keysend</option>
-                <option style="color=black" value="other">Other</option>
+              <select bind:value={member.type} class="border w-full p-2 rounded" style="color: black"> 
+                <option value="bolt12" selected>Bolt12</option>
+                <option value="keysend">Keysend</option>
+                <option value="other">Other</option>
               </select>
               <label class="mb-1 block" for="destination">Destination</label>
               <textarea
@@ -257,7 +266,7 @@
                 class="border w-full p-2 rounded"
                 rows="2"
                 bind:value={member.destination}
-                placeholder="Bolt12 offer"
+                placeholder="Offer (Bolt12) or Node Public Key (Keysend)"
               />
               {#if member.destinationError}
                 <p class="text-sm text-red-500">{member.destinationError}</p>
