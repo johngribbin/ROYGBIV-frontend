@@ -302,10 +302,10 @@
             format="primary"
             on:click={async () => {
               const prism = await createPrism({ label, members })
-              if (prism?.bolt12) {
+              if (prism?.offer.bolt12) {
                 bolt12$.next({
                   ...$bolt12$,
-                  data: prism.bolt12
+                  data: prism.offer.bolt12
                 })
                 modalState$.next({
                   ...$modalState$,

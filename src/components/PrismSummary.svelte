@@ -12,10 +12,10 @@
   }
 
   function showQR() {
-    if (prism.bolt12) {
+    if (prism.offer.bolt12) {
       bolt12$.next({
         ...$bolt12$,
-        data: prism.bolt12
+        data: prism.offer.bolt12
       })
       modalState$.next({
         ...$modalState$,
@@ -27,8 +27,8 @@
 
 <h1 class="flex text-2xl mt-4">
   {prism.label}
-  {#if prism.bolt12}
-    <CopyString stringVal={prism.bolt12} />
+  {#if prism.offer.bolt12}
+    <CopyString stringVal={prism.offer.bolt12} />
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div on:click={showQR} class="w-8 cursor-pointer">{@html qrIcon}</div>
   {/if}

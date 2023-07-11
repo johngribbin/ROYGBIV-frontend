@@ -11,8 +11,17 @@ export type Member = {
   percentage?: number
 }
 
+export type Offer = {
+  offer_id: string
+  active: boolean
+  single_use: boolean
+  bolt12: string
+  used: boolean
+}
+
 export type Prism = {
   label: string
   bolt12?: string
   members: Member[]
+  offer: Offer
 }
