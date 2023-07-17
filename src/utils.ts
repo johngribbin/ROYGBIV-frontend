@@ -21,6 +21,7 @@ export function parseNodeAddress(address: string): ParsedNodeAddress {
 }
 
 export const nodePublicKeyRegex = /[0-9a-fA-F]{66}/
+export const bolt12OfferRegex = /lno1[0-9a-fA-F]*/
 const ipRegex = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$/
 const domainRegex =
   /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/

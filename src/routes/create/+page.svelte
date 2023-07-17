@@ -3,7 +3,7 @@
   import plus from '../../icons/plus'
   import { createPrism, listPrisms } from '../../ln-message'
   import type { Member } from '../../types'
-  import { addMemberPercentages, nodePublicKeyRegex } from '../../utils'
+  import { addMemberPercentages, nodePublicKeyRegex, bolt12OfferRegex } from '../../utils'
   import Button from '../../components/Button.svelte'
   import PrismSummary from '../../components/PrismSummary.svelte'
   import Slide from '../../components/Slide.svelte'
@@ -21,7 +21,7 @@
   let slide: SlideStep = 0
   let previousSlide: SlideStep = 0
   let label: string = '' // prism name
-  let memberCount = 2 // minimum of 2 members in a prism
+  let memberCount = 1 // minimum of 1 members in a prism
   let members: Member[] = []
   let labelError = '' // Prism label validation
 
@@ -53,10 +53,19 @@
   }
 
   // Member destination validation
-  function validateDestination(destination: string) {
-    if (!nodePublicKeyRegex.test(destination)) {
-      return 'destination is invalid node public key'
-    }
+  function validateDestination(type: string, destination: string) {
+    if (type == "bolt12") {
+      if (!bolt12OfferRegex.test(destination)) {
+        return 'destination is invalid Bolt12 offer.'
+      }
+    } 
+    
+    if (type == "keysend") {
+      if (!nodePublicKeyRegex.test(destination)) {
+        return 'destination is invalid node public key.'
+      }
+    } 
+
     return ''
   }
 
@@ -99,6 +108,7 @@
       name: '',
       nameError: '',
       destination: '',
+      type: '', 
       destinationError: '',
       split: 1, // Default to all members having same share
       splitError: '',
@@ -130,7 +140,7 @@
   $: {
     members.forEach((member) => {
       member.nameError = member.name ? validateName(member.name) : ''
-      member.destinationError = member.destination ? validateDestination(member.destination) : ''
+      member.destinationError = member.destination ? validateDestination(member.type, member.destination) : ''
       member.splitError = validateSplit(member.split)
     })
   }
@@ -244,13 +254,19 @@
             {/if}
             <!-- Destination -->
             <div class="mt-6">
+              <label class="mb-1 block" for="type">Type</label>
+              <select bind:value={member.type} class="border w-full p-2 rounded" style="color: black"> 
+                <option value="bolt12" selected>Bolt12</option>
+                <option value="keysend">Keysend</option>
+                <option value="other">Other</option>
+              </select>
               <label class="mb-1 block" for="destination">Destination</label>
               <textarea
                 id="destination"
                 class="border w-full p-2 rounded"
                 rows="2"
                 bind:value={member.destination}
-                placeholder="node public key"
+                placeholder="Offer (Bolt12) or Node Public Key (Keysend)"
               />
               {#if member.destinationError}
                 <p class="text-sm text-red-500">{member.destinationError}</p>
@@ -286,10 +302,10 @@
             format="primary"
             on:click={async () => {
               const prism = await createPrism({ label, members })
-              if (prism?.bolt12) {
+              if (prism?.offer.bolt12) {
                 bolt12$.next({
                   ...$bolt12$,
-                  data: prism.bolt12
+                  data: prism.offer.bolt12
                 })
                 modalState$.next({
                   ...$modalState$,
